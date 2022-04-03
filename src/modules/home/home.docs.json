@@ -1,0 +1,76 @@
+{
+    "/": {
+        "get": {
+            "operationId": "getTest",
+            "tags": [
+                "Home"
+            ],
+            "security": [],
+            "summary": "Test API endpoind",
+            "responses": {
+                "200": {
+                    "description": "Test ok",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "500": {
+                    "$ref": "#/components/responses/InternalError"
+                }
+            }
+        }
+    },
+    "/Admin/token": {
+        "post": {
+            "operationId": "getTokent",
+            "tags": [
+                "Admin"
+            ],
+            "security": [],
+            "summary": "Generate Admin token",
+            "requestBody": {
+                "content": {
+                    "application/x-www-form-urlencoded": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "password": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "responses": {
+                "200": {
+                    "description": "Test ok",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "token": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "500": {
+                    "$ref": "#/components/responses/InternalError"
+                }
+            }
+        }
+    }
+}

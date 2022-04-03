@@ -1,0 +1,18 @@
+FROM dykoffi/nodecqx:latest
+
+# Set ENV variables
+ENV DATABASE_URL=
+
+# Copy file
+RUN mkdir /App
+COPY package.json /App
+WORKDIR /App
+
+# install all nodejs package
+RUN yarn install 
+
+# Expose port for communication
+EXPOSE 8080
+
+# update database url info
+CMD echo "DATABASE_URL=${DATABASE_URL}" > .env && prisma db push && yarn start:dev

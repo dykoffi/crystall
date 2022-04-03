@@ -1,0 +1,195 @@
+{
+    "/category": {
+        "get": {
+            "operationId": "getcategorys",
+            "tags": [
+                "Category"
+            ],
+            "summary": "Returns all categorys",
+            "responses": {
+                "200": {
+                    "description": "List of categorys",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/Category"
+                                }
+                            }
+                        }
+                    }
+                },
+                "403": {
+                    "$ref": "#/components/responses/UnauthorizedError"
+                },
+                "500": {
+                    "$ref": "#/components/responses/InternalError"
+                }
+            }
+        },
+        "post": {
+            "operationId": "addcategory",
+            "tags": [
+                "Category"
+            ],
+            "summary": "Add new category",
+            "requestBody": {
+                "content": {
+                    "application/x-www-form-urlencoded": {
+                        "schema": {
+                            "$ref": "#/inputs/Category"
+                        }
+                    }
+                }
+            },
+            "responses": {
+                "201": {
+                    "description": "table created",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "data": {
+                                        "$ref": "#/definitions/Category"
+                                    },
+                                    "message": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "403": {
+                    "$ref": "#/components/responses/UnauthorizedError"
+                },
+                "500": {
+                    "$ref": "#/components/responses/InternalError"
+                }
+            }
+        }
+    },
+    "/category/{id}": {
+        "get": {
+            "operationId": "getcategory",
+            "tags": [
+                "Category"
+            ],
+            "summary": "Returns specific category designated by id",
+            "responses": {
+                "200": {
+                    "description": "object category basic information",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/definitions/Category"
+                            }
+                        }
+                    }
+                },
+                "403": {
+                    "$ref": "#/components/responses/UnauthorizedError"
+                },
+                "404": {
+                    "$ref": "#/components/responses/NotFoundError"
+                },
+                "500": {
+                    "$ref": "#/components/responses/InternalError"
+                }
+            }
+        },
+        "put": {
+            "operationId": "updatecategory",
+            "tags": [
+                "Category"
+            ],
+            "summary": "Update category",
+            "requestBody": {
+                "content": {
+                    "application/x-www-form-urlencoded": {
+                        "schema": {
+                            "$ref": "#/inputs/Category"
+                        }
+                    }
+                }
+            },
+            "responses": {
+                "201": {
+                    "description": "object category updated successfully",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "data": {
+                                        "$ref": "#/definitions/Category"
+                                    },
+                                    "message": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "403": {
+                    "$ref": "#/components/responses/UnauthorizedError"
+                },
+                "404": {
+                    "$ref": "#/components/responses/NotFoundError"
+                },
+                "500": {
+                    "$ref": "#/components/responses/InternalError"
+                }
+            }
+        },
+        "delete": {
+            "operationId": "deletecategory",
+            "tags": [
+                "Category"
+            ],
+            "summary": "Delete specific category designated by id",
+            "responses": {
+                "201": {
+                    "description": "object category deleted successfully",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "data": {
+                                        "$ref": "#/definitions/Category"
+                                    },
+                                    "message": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "403": {
+                    "$ref": "#/components/responses/UnauthorizedError"
+                },
+                "404": {
+                    "$ref": "#/components/responses/NotFoundError"
+                },
+                "500": {
+                    "$ref": "#/components/responses/InternalError"
+                }
+            }
+        },
+        "parameters": [
+            {
+                "in": "path",
+                "name": "id",
+                "required": true,
+                "schema": {
+                    "type": "integer"
+                }
+            }
+        ]
+    }
+}

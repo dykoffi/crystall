@@ -1,0 +1,195 @@
+{
+    "/taxe": {
+        "get": {
+            "operationId": "gettaxes",
+            "tags": [
+                "Taxe"
+            ],
+            "summary": "Returns all taxes",
+            "responses": {
+                "200": {
+                    "description": "List of taxes",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/Taxe"
+                                }
+                            }
+                        }
+                    }
+                },
+                "403": {
+                    "$ref": "#/components/responses/UnauthorizedError"
+                },
+                "500": {
+                    "$ref": "#/components/responses/InternalError"
+                }
+            }
+        },
+        "post": {
+            "operationId": "addtaxe",
+            "tags": [
+                "Taxe"
+            ],
+            "summary": "Add new taxe",
+            "requestBody": {
+                "content": {
+                    "application/x-www-form-urlencoded": {
+                        "schema": {
+                            "$ref": "#/inputs/Taxe"
+                        }
+                    }
+                }
+            },
+            "responses": {
+                "201": {
+                    "description": "table created",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "data": {
+                                        "$ref": "#/definitions/Taxe"
+                                    },
+                                    "message": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "403": {
+                    "$ref": "#/components/responses/UnauthorizedError"
+                },
+                "500": {
+                    "$ref": "#/components/responses/InternalError"
+                }
+            }
+        }
+    },
+    "/taxe/{id}": {
+        "get": {
+            "operationId": "gettaxe",
+            "tags": [
+                "Taxe"
+            ],
+            "summary": "Returns specific taxe designated by id",
+            "responses": {
+                "200": {
+                    "description": "object taxe basic information",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/definitions/Taxe"
+                            }
+                        }
+                    }
+                },
+                "403": {
+                    "$ref": "#/components/responses/UnauthorizedError"
+                },
+                "404": {
+                    "$ref": "#/components/responses/NotFoundError"
+                },
+                "500": {
+                    "$ref": "#/components/responses/InternalError"
+                }
+            }
+        },
+        "put": {
+            "operationId": "updatetaxe",
+            "tags": [
+                "Taxe"
+            ],
+            "summary": "Update taxe",
+            "requestBody": {
+                "content": {
+                    "application/x-www-form-urlencoded": {
+                        "schema": {
+                            "$ref": "#/inputs/Taxe"
+                        }
+                    }
+                }
+            },
+            "responses": {
+                "201": {
+                    "description": "object taxe updated successfully",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "data": {
+                                        "$ref": "#/definitions/Taxe"
+                                    },
+                                    "message": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "403": {
+                    "$ref": "#/components/responses/UnauthorizedError"
+                },
+                "404": {
+                    "$ref": "#/components/responses/NotFoundError"
+                },
+                "500": {
+                    "$ref": "#/components/responses/InternalError"
+                }
+            }
+        },
+        "delete": {
+            "operationId": "deletetaxe",
+            "tags": [
+                "Taxe"
+            ],
+            "summary": "Delete specific taxe designated by id",
+            "responses": {
+                "201": {
+                    "description": "object taxe deleted successfully",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "data": {
+                                        "$ref": "#/definitions/Taxe"
+                                    },
+                                    "message": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "403": {
+                    "$ref": "#/components/responses/UnauthorizedError"
+                },
+                "404": {
+                    "$ref": "#/components/responses/NotFoundError"
+                },
+                "500": {
+                    "$ref": "#/components/responses/InternalError"
+                }
+            }
+        },
+        "parameters": [
+            {
+                "in": "path",
+                "name": "id",
+                "required": true,
+                "schema": {
+                    "type": "integer"
+                }
+            }
+        ]
+    }
+}

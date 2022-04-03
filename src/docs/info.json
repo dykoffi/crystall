@@ -1,0 +1,382 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "Crystal Backend",
+        "description": "Test crystal backend features",
+        "version": "1.4.0",
+        "contact": {
+            "email": "info@data354.com",
+            "name": "Data354",
+            "url": "https://www.data354.com/"
+        }
+    },
+    "definitions": {
+        "User": {
+            "type": "object",
+            "properties": {
+                "id_": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "contribuableId": {
+                    "type": "string"
+                },
+                "tel": {
+                    "type": "string"
+                },
+                "address": {
+                    "type": "string"
+                },
+                "state": {
+                    "type": "string"
+                },
+                "cni_number": {
+                    "type": "string"
+                },
+                "createdAt_": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "connection_": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/Connection_"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
+                },
+                "activities_": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Activity"
+                    }
+                }
+            }
+        },
+        "Connection_": {
+            "type": "object",
+            "properties": {
+                "id_": {
+                    "type": "integer"
+                },
+                "login": {
+                    "type": "string"
+                },
+                "pwd": {
+                    "type": "string"
+                },
+                "createdAt_": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "user_": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/User"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
+                }
+            }
+        },
+        "Activity": {
+            "type": "object",
+            "properties": {
+                "id_": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "category_": {
+                    "$ref": "#/definitions/Category"
+                },
+                "createdAt_": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "user_": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/User"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
+                },
+                "taxes_": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Taxe"
+                    }
+                }
+            }
+        },
+        "Category": {
+            "type": "object",
+            "properties": {
+                "id_": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "activities_": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Activity"
+                    }
+                }
+            }
+        },
+        "Taxe": {
+            "type": "object",
+            "properties": {
+                "id_": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "annual_value": {
+                    "type": "integer"
+                },
+                "createdAt_": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "activities_": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Activity"
+                    }
+                }
+            }
+        }
+    },
+    "inputs": {
+        "User": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "contribuableId": {
+                    "type": "string"
+                },
+                "tel": {
+                    "type": "string"
+                },
+                "address": {
+                    "type": "string"
+                },
+                "state": {
+                    "type": "string"
+                },
+                "cni_number": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "Connection_": {
+            "type": "object",
+            "properties": {
+                "login": {
+                    "type": "string"
+                },
+                "pwd": {
+                    "type": "string"
+                }
+            }
+        },
+        "Activity": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "categoryId": {
+                    "type": "integer"
+                },
+                "userId": {
+                    "type": "integer"
+                },
+                "taxesIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "id_": {
+                                "type": "integer"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "Category": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "age": {
+                    "type": "integer"
+                }
+            }
+        },
+        "Taxe": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "annual_value": {
+                    "type": "integer"
+                }
+            }
+        }
+    },
+    "additionnalsInputs": {
+        "User": {
+            "type": "object",
+            "properties": {
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "Connection_": {
+            "type": "object",
+            "properties": {}
+        },
+        "Activity": {
+            "type": "object",
+            "properties": {
+                "categoryId": {
+                    "type": "integer"
+                },
+                "userId": {
+                    "type": "integer"
+                },
+                "taxesIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "id_": {
+                                "type": "integer"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "Category": {
+            "type": "object",
+            "properties": {
+                "age": {
+                    "type": "integer"
+                }
+            }
+        },
+        "Taxe": {
+            "type": "object",
+            "properties": {}
+        },
+        "Users": {
+            "type": "object",
+            "properties": {}
+        },
+        "Maison": {
+            "type": "object",
+            "properties": {}
+        }
+    },
+    "components": {
+        "schemas": {
+            "User": {
+                "$ref": "#/definitions/User"
+            },
+            "Connection_": {
+                "$ref": "#/definitions/Connection_"
+            },
+            "Activity": {
+                "$ref": "#/definitions/Activity"
+            },
+            "Category": {
+                "$ref": "#/definitions/Category"
+            },
+            "Taxe": {
+                "$ref": "#/definitions/Taxe"
+            }
+        },
+        "responses": {
+            "ExampleError": {
+                "content": {
+                    "schema": {
+                        "type": "object",
+                        "required": [
+                            "message",
+                            "error"
+                        ],
+                        "properties": {
+                            "error": {
+                                "type": "string"
+                            },
+                            "message": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "UnauthorizedError": {
+                "description": "UnauthorizedError",
+                "content": {
+                    "application/json": {
+                        "$ref": "#/components/responses/ExampleError/content"
+                    }
+                }
+            },
+            "InternalError": {
+                "description": "InternalError",
+                "content": {
+                    "application/json": {
+                        "$ref": "#/components/responses/ExampleError/content"
+                    }
+                }
+            },
+            "NotFoundError": {
+                "description": "NotFoundError",
+                "content": {
+                    "application/json": {
+                        "$ref": "#/components/responses/ExampleError/content"
+                    }
+                }
+            }
+        },
+        "securitySchemes": {
+            "ApiKeyAuth": {
+                "type": "apiKey",
+                "in": "header",
+                "name": "x-access-token"
+            }
+        }
+    },
+    "security": [
+        {
+            "ApiKeyAuth": []
+        }
+    ]
+}

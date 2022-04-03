@@ -1,0 +1,264 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "User": {
+      "type": "object",
+      "properties": {
+        "id_": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "contribuableId": {
+          "type": "string"
+        },
+        "tel": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "cni_number": {
+          "type": "string"
+        },
+        "createdAt_": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "connection_": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Connection_"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "activities_": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Activity"
+          }
+        }
+      }
+    },
+    "Connection_": {
+      "type": "object",
+      "properties": {
+        "id_": {
+          "type": "integer"
+        },
+        "login": {
+          "type": "string"
+        },
+        "pwd": {
+          "type": "string"
+        },
+        "createdAt_": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "user_": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/User"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "Activity": {
+      "type": "object",
+      "properties": {
+        "id_": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "category_": {
+          "$ref": "#/definitions/Category"
+        },
+        "createdAt_": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "user_": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/User"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "taxes_": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Taxe"
+          }
+        }
+      }
+    },
+    "Category": {
+      "type": "object",
+      "properties": {
+        "id_": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "activities_": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Activity"
+          }
+        }
+      }
+    },
+    "Taxe": {
+      "type": "object",
+      "properties": {
+        "id_": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "annual_value": {
+          "type": "integer"
+        },
+        "createdAt_": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "activities_": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Activity"
+          }
+        }
+      }
+    },
+    "Token_": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "value": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "pass": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "Log_": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "protocol": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "method": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "hostname": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "path": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "httpVersion": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "statusCode": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "userIp": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "userReferer": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "userAgent": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    }
+  },
+  "type": "object",
+  "properties": {
+    "user": {
+      "$ref": "#/definitions/User"
+    },
+    "connection_": {
+      "$ref": "#/definitions/Connection_"
+    },
+    "activity": {
+      "$ref": "#/definitions/Activity"
+    },
+    "category": {
+      "$ref": "#/definitions/Category"
+    },
+    "taxe": {
+      "$ref": "#/definitions/Taxe"
+    },
+    "token_": {
+      "$ref": "#/definitions/Token_"
+    },
+    "log_": {
+      "$ref": "#/definitions/Log_"
+    }
+  }
+}
