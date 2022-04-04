@@ -25,3 +25,11 @@ jobs:
       - run: docker build -t crystal -f Dockerfile.prod .
       - run: docker push dykoffi/crystal:2.0.0
     parallelism: 4
+
+workflows:
+  launch:
+    jobs:
+      - build
+      - push:
+          requires:
+            - install_cqx
