@@ -9,3 +9,4 @@ jobs:
       - run: ls
       - run: pwd
       - run: cat /etc/issue
+    parallelism: 4
