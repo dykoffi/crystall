@@ -9,6 +9,7 @@ jobs:
       - run: ls
       - run: pwd
       - run: cat /etc/issue
+      - run: docker build -t crystal -f Dockerfile.prod .
       - store_artifacts:
           path: .cqx
     parallelism: 4
