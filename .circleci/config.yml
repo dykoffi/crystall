@@ -32,4 +32,4 @@ workflows:
       - build
       - push:
           requires:
-            - install_cqx
+            - build
