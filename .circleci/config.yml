@@ -9,7 +9,19 @@ jobs:
       - run: ls
       - run: pwd
       - run: cat /etc/issue
-      - run: docker build -t crystal -f Dockerfile.prod .
       - store_artifacts:
           path: .cqx
+      - persist_to_workspace:
+          root: .
+          paths:
+            - "."
+  
+  push:
+    machine: true
+    steps:
+      - attach_workspace:
+          at: .
+      - run: docker login -u $DOCKER_USER -p $DOCKER_PASS
+      - run: docker build -t crystal -f Dockerfile.prod .
+      - run: docker push dykoffi/crystal:2.0.0
     parallelism: 4
