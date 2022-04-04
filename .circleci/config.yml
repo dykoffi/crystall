@@ -21,9 +21,12 @@ jobs:
     steps:
       - attach_workspace:
           at: .
-      - run: docker login -u $DOCKER_USER -p $DOCKER_PASS
+      # - run: docker login -u $DOCKER_USER -p $DOCKER_PASS
       - run: docker build -t crystal -f Dockerfile.prod .
-      - run: docker push dykoffi/crystal:2.0.0
+      - run: docker save crystal > crystal.tar
+      - store_artifacts:
+          path: ./crystal.tar
+      # - run: docker push dykoffi/crystal:2.0.0
     parallelism: 4
 
 workflows:
