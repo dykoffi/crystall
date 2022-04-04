@@ -9,4 +9,6 @@ jobs:
       - run: ls
       - run: pwd
       - run: cat /etc/issue
+      - store_artifacts:
+          path: .cqx
     parallelism: 4
