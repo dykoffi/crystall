@@ -15,7 +15,7 @@ RUN cqx build
 
 # ################### Release Stage #######################
 
-FROM dykoffi/node:light as release
+FROM dykoffi/node:pm2-light as release
 
 WORKDIR /App
 COPY --from=base /App/build/package.json ./

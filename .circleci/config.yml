@@ -3,7 +3,15 @@ orbs:
   cloudrun: circleci/gcp-cloud-run@1.0.2
   gcp-cli: circleci/gcp-cli@2.4.0
 jobs:
-  build_and_deploy_on_cloud_run:
+  build:
+    machine:
+      image: ubuntu-2004:current
+      docker_layer_caching: true
+    steps:
+      - run: docker build -t europe-north1-docker.pkg.dev/audiosetrecorder-2022/crystal/crystal:sophie -f Dockerfile .
+      - run: docker push europe-north1-docker.pkg.dev/audiosetrecorder-2022/crystal/crystal:sophie
+  
+  deploy_on_cloud_run:
     machine:
       image: ubuntu-2004:current
       docker_layer_caching: true
@@ -12,16 +20,13 @@ jobs:
           at: .
       - checkout
       - cloudrun/init
-      - run: gcloud run deploy dao --platform=managed --region=europe-north1 --set-env-vars=[DATABASE_URL=$DATABASE_URL] --image=europe-north1-docker.pkg.dev/audiosetrecorder-2022/crystal/crystal/edy-latest --port=80 --max-instances=100 --min-instances=0
-      # - cloudrun/build:
-      #     tag: europe-north1-docker.pkg.dev/audiosetrecorder-2022/crystal/crystal/edy-latest
-      # - cloudrun/deploy:
-      #     image: europe-north1-docker.pkg.dev/audiosetrecorder-2022/crystal/crystal/edy-latest
-      #     platform: "managed"
-      #     region: "europe-north1"
-      #     service-name: "dani"
-      #     args: "port=80, set-env-vars=[DATABASE_URL=$DATABASE_URL]"
-      #     unauthenticated: true
+      - cloudrun/deploy:
+          image: europe-north1-docker.pkg.dev/audiosetrecorder-2022/crystal/crystal:sophie
+          platform: "managed"
+          region: "europe-north1"
+          service-name: "dani"
+          args: "port=80, set-env-vars=DATABASE_URL=$DATABASE_URL"
+          unauthenticated: true
 
   test_gcloud:
     machine:
@@ -54,4 +59,7 @@ jobs:
 workflows:
   launch:
     jobs:
-      - build_and_deploy_on_cloud_run
+      - build
+      - deploy_on_cloud_run:
+          requires:
+            - "build"
