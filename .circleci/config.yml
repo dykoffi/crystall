@@ -1,4 +1,6 @@
 version: 2.1
+orbs:
+  cloudrun: circleci/gcp-cloud-run@1.0.2
 jobs:
   build:
     docker:
@@ -15,9 +17,11 @@ jobs:
           root: .
           paths:
             - "."
-  
+
   push:
-    machine: true
+    machine:
+      image: ubuntu-2004:current
+      docker_layer_caching: true
     steps:
       - attach_workspace:
           at: .
@@ -27,7 +31,6 @@ jobs:
       - store_artifacts:
           path: ./crystal.tar
       # - run: docker push dykoffi/crystal:2.0.0
-    parallelism: 4
 
 workflows:
   launch:
