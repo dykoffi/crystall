@@ -1,6 +1,7 @@
 version: 2.1
 orbs:
   cloudrun: circleci/gcp-cloud-run@1.0.2
+  gcp-cli: circleci/gcp-cli@2.4.0
 jobs:
   build_and_deploy_on_cloud_run:
     machine:
@@ -23,8 +24,8 @@ jobs:
 
   test_gcloud:
     machine:
-        image: ubuntu-2004:current
-        docker_layer_caching: true
+      image: ubuntu-2004:current
+      docker_layer_caching: true
     steps:
       - run: gcloud --help
 
