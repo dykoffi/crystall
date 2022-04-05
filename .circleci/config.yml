@@ -21,6 +21,13 @@ jobs:
           args: "port=80, set-env-vars=[DATABASE_URL=$DATABASE_URL]"
           unauthenticated: true
 
+  test_gcloud:
+    machine:
+        image: ubuntu-2004:current
+        docker_layer_caching: true
+    steps:
+      - run: gcloud --help
+
   decode_key_to_json:
     machine:
       image: ubuntu-2004:current
@@ -44,4 +51,4 @@ jobs:
 workflows:
   launch:
     jobs:
-      - build_and_deploy_on_cloud_run
+      - test_gcloud
