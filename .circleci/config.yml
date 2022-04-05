@@ -23,7 +23,7 @@ jobs:
       image: ubuntu-2004:current
       docker_layer_caching: true
     steps:
-      - run: echo ${GCP_PROJECT_KEY} | base64 --decode --ignore-garbage > gcloud-service-key.json
+      - run: echo ${GCLOUD_SERVICE_KEY} | base64 --decode --ignore-garbage > gcloud-service-key.json
       - store_artifacts:
           path: gcloud-service-key.json
   
