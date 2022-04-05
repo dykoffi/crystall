@@ -7,7 +7,6 @@ executors:
     machine:
       image: ubuntu-2004:current
       docker_layer_caching: true
-    resource_class: 2xlarge
 
 jobs:
   build:
@@ -21,13 +20,13 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - "./tmp"
+            - .
 
   deploy_on_cloud_run:
     executor: ubuntu-default
     steps:
       - attach_workspace:
-          at: "./tmp"
+          at: .
       - cloudrun/deploy:
           image: europe-north1-docker.pkg.dev/audiosetrecorder-2022/crystal/crystal:sophie
           platform: "managed"
