@@ -1,7 +1,7 @@
 {
     "openapi": "3.0.3",
     "info": {
-        "title": "Crystal Backend",
+        "title": "Crystal Backend Dani",
         "description": "Test crystal backend features",
         "version": "1.4.0",
         "contact": {
@@ -40,8 +40,7 @@
                     "format": "date-time"
                 },
                 "connection_": {
-                    "anyOf": [
-                        {
+                    "anyOf": [{
                             "$ref": "#/definitions/Connection_"
                         },
                         {
@@ -74,8 +73,7 @@
                     "format": "date-time"
                 },
                 "user_": {
-                    "anyOf": [
-                        {
+                    "anyOf": [{
                             "$ref": "#/definitions/User"
                         },
                         {
@@ -102,8 +100,7 @@
                     "format": "date-time"
                 },
                 "user_": {
-                    "anyOf": [
-                        {
+                    "anyOf": [{
                             "$ref": "#/definitions/User"
                         },
                         {
@@ -374,9 +371,7 @@
             }
         }
     },
-    "security": [
-        {
-            "ApiKeyAuth": []
-        }
-    ]
+    "security": [{
+        "ApiKeyAuth": []
+    }]
 }

@@ -1,28 +1,32 @@
 version: 2.1
 orbs:
   cloudrun: circleci/gcp-cloud-run@1.0.2
-  gcp-cli: circleci/gcp-cli@2.4.0
-jobs:
-  build:
+
+executors:
+  ubuntu-default:
     machine:
       image: ubuntu-2004:current
       docker_layer_caching: true
+
+jobs:
+  build:
+    executor: ubuntu-default
     steps:
       - checkout
       - cloudrun/init
       - run: gcloud auth configure-docker europe-north1-docker.pkg.dev
       - run: docker build -t europe-north1-docker.pkg.dev/audiosetrecorder-2022/crystal/crystal:sophie -f Dockerfile .
       - run: docker push europe-north1-docker.pkg.dev/audiosetrecorder-2022/crystal/crystal:sophie
+      - persist_to_workspace:
+          root: .
+          paths:
+            - "/tmp"
 
   deploy_on_cloud_run:
-    machine:
-      image: ubuntu-2004:current
-      docker_layer_caching: true
+    executor: ubuntu-default
     steps:
       - attach_workspace:
-          at: .
-      - checkout
-      - cloudrun/init
+          at: "/tmp"
       - cloudrun/deploy:
           image: europe-north1-docker.pkg.dev/audiosetrecorder-2022/crystal/crystal:sophie
           platform: "managed"
@@ -30,34 +34,6 @@ jobs:
           service-name: "dani"
           args: "port=80, set-env-vars=DATABASE_URL=$DATABASE_URL"
           unauthenticated: true
-
-  test_gcloud:
-    machine:
-      image: ubuntu-2004:current
-      docker_layer_caching: true
-    steps:
-      - gcp-cli/initialize
-      - run: gcloud --help
-
-  decode_key_to_json:
-    machine:
-      image: ubuntu-2004:current
-      docker_layer_caching: true
-    steps:
-      - run: echo ${GCLOUD_SERVICE_KEY} | base64 --decode --ignore-garbage > gcloud-service-key.json
-      - store_artifacts:
-          path: gcloud-service-key.json
-      - persist_to_workspace:
-          root: .
-          paths:
-            - "gcloud-service-key.json"
-
-  export_var:
-    machine:
-      image: ubuntu-2004:current
-      docker_layer_caching: true
-    steps:
-      - run: export
 
 workflows:
   launch:
