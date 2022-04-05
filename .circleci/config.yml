@@ -12,16 +12,16 @@ jobs:
           at: .
       - checkout
       - cloudrun/init
-      - run: gcloud --help
+      - run: gcloud run deploy dao --set-env-vars=[DATABASE_URL=$DATABASE_URL] --image=europe-north1-docker.pkg.dev/audiosetrecorder-2022/crystal/crystal/edy-latest --port=80 --max-instances=100 --min-instances=0
       # - cloudrun/build:
       #     tag: europe-north1-docker.pkg.dev/audiosetrecorder-2022/crystal/crystal/edy-latest
-      - cloudrun/deploy:
-          image: europe-north1-docker.pkg.dev/audiosetrecorder-2022/crystal/crystal/edy-latest
-          platform: "managed"
-          region: "europe-north1"
-          service-name: "dani"
-          args: "port=80, set-env-vars=[DATABASE_URL=$DATABASE_URL]"
-          unauthenticated: true
+      # - cloudrun/deploy:
+      #     image: europe-north1-docker.pkg.dev/audiosetrecorder-2022/crystal/crystal/edy-latest
+      #     platform: "managed"
+      #     region: "europe-north1"
+      #     service-name: "dani"
+      #     args: "port=80, set-env-vars=[DATABASE_URL=$DATABASE_URL]"
+      #     unauthenticated: true
 
   test_gcloud:
     machine:
