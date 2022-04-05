@@ -11,8 +11,8 @@ jobs:
           at: .
       - checkout
       - cloudrun/init
-      - cloudrun/build:
-          tag: europe-north1-docker.pkg.dev/audiosetrecorder-2022/crystal/crystal/edy-latest
+      # - cloudrun/build:
+      #     tag: europe-north1-docker.pkg.dev/audiosetrecorder-2022/crystal/crystal/edy-latest
       - cloudrun/deploy:
           image: europe-north1-docker.pkg.dev/audiosetrecorder-2022/crystal/crystal/edy-latest
           platform: "managed"
