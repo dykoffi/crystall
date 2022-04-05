@@ -20,13 +20,13 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - "/tmp"
+            - "./tmp"
 
   deploy_on_cloud_run:
     executor: ubuntu-default
     steps:
       - attach_workspace:
-          at: "/tmp"
+          at: "./tmp"
       - cloudrun/deploy:
           image: europe-north1-docker.pkg.dev/audiosetrecorder-2022/crystal/crystal:sophie
           platform: "managed"
