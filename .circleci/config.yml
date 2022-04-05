@@ -9,9 +9,11 @@ jobs:
       docker_layer_caching: true
     steps:
       - checkout
+      - cloudrun/init
+      - run: gcloud auth configure-docker europe-north1-docker.pkg.dev
       - run: docker build -t europe-north1-docker.pkg.dev/audiosetrecorder-2022/crystal/crystal:sophie -f Dockerfile .
       - run: docker push europe-north1-docker.pkg.dev/audiosetrecorder-2022/crystal/crystal:sophie
-  
+
   deploy_on_cloud_run:
     machine:
       image: ubuntu-2004:current
