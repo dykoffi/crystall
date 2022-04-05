@@ -18,7 +18,7 @@ jobs:
           platform: "managed"
           region: "europe-north1"
           service-name: "edy"
-          args: "--port=80, --set-env-vars=[DATABASE_URL=$DATABASE_URL]"
+          args: "port=80, set-env-vars=[DATABASE_URL=$DATABASE_URL]"
           unauthenticated: true
 
   decode_key_to_json:
