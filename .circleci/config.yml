@@ -15,7 +15,7 @@ jobs:
           tag: europe-north1-docker.pkg.dev/audiosetrecorder-2022/crystal/crystal/edy-latest
       - cloudrun/deploy:
           image: europe-north1-docker.pkg.dev/audiosetrecorder-2022/crystal/crystal/edy-latest
-          plateform: "managed"
+          platform: "managed"
           region: "europe-north1"
           service-name: "Edy"
           unauthenticated: true
