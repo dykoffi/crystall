@@ -18,6 +18,9 @@ jobs:
           platform: "managed"
           region: "europe-north1"
           service-name: "edy"
+          port: 80
+          --set-env-vars: 
+            - DATABASE_URL=$DATABASE_URL
           unauthenticated: true
 
   decode_key_to_json:
@@ -38,8 +41,8 @@ jobs:
       image: ubuntu-2004:current
       docker_layer_caching: true
     steps:
-      - run: export 
-  
+      - run: export
+
 workflows:
   launch:
     jobs:
