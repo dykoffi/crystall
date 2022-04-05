@@ -2,40 +2,32 @@ version: 2.1
 orbs:
   cloudrun: circleci/gcp-cloud-run@1.0.2
 jobs:
-  build:
-    docker:
-      - image: cimg/node:17.8.0
-    steps:
-      - checkout
-      - run: node --version
-      - run: ls
-      - run: pwd
-      - run: cat /etc/issue
-      - store_artifacts:
-          path: .cqx
-      - persist_to_workspace:
-          root: .
-          paths:
-            - "."
-
-  push:
+  build_and_deploy_on_cloud_run:
     machine:
       image: ubuntu-2004:current
       docker_layer_caching: true
     steps:
-      - attach_workspace:
-          at: .
-      # - run: docker login -u $DOCKER_USER -p $DOCKER_PASS
-      - run: docker build -t crystal -f Dockerfile.prod .
-      - run: docker save crystal > crystal.tar
-      - store_artifacts:
-          path: ./crystal.tar
-      # - run: docker push dykoffi/crystal:2.0.0
+      - checkout
+      - cloudrun/init
+      - cloudrun/build:
+          tag:
+      - cloudrun/deploy:
+          image: ""
+          plateform: ""
+          region: ""
+          service-name: ""
+          unauthenticated: true
 
+  show_env_var:
+    machine:
+      image: ubuntu-2004:current
+      docker_layer_caching: true
+    steps:
+      - run: echo ${GCP_PROJECT_KEY} | base64 --decode --ignore-garbage > $HOME/gcloud-service-key.json
+      - store_artifacts:
+          path: $HOME/gcloud-service-key.json
+  
 workflows:
   launch:
     jobs:
-      - build
-      - push:
-          requires:
-            - build
+      - show_env_var
