@@ -12,6 +12,7 @@ jobs:
           at: .
       - checkout
       - cloudrun/init
+      - run: gcloud --help
       # - cloudrun/build:
       #     tag: europe-north1-docker.pkg.dev/audiosetrecorder-2022/crystal/crystal/edy-latest
       - cloudrun/deploy:
@@ -27,8 +28,7 @@ jobs:
       image: ubuntu-2004:current
       docker_layer_caching: true
     steps:
-      - gcp-cli/initialize:
-          executor: gcp-cli/default
+      - gcp-cli/initialize
       - run: gcloud --help
 
   decode_key_to_json:
@@ -54,4 +54,4 @@ jobs:
 workflows:
   launch:
     jobs:
-      - test_gcloud
+      - build_and_deploy_on_cloud_run
