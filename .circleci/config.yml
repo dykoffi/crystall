@@ -8,10 +8,8 @@ executors:
       image: ubuntu-2004:current
       docker_layer_caching: true
 
-
-
 jobs:
-  build:
+  build_deploy_on_cloud_run:
     executor: ubuntu-default
     steps:
       - checkout
@@ -19,16 +17,6 @@ jobs:
       - run: gcloud auth configure-docker europe-north1-docker.pkg.dev
       - run: docker build -t europe-north1-docker.pkg.dev/audiosetrecorder-2022/crystal/crystal:sophie -f Dockerfile .
       - run: docker push europe-north1-docker.pkg.dev/audiosetrecorder-2022/crystal/crystal:sophie
-      - persist_to_workspace:
-          root: /
-          paths:
-            - .
-
-  deploy_on_cloud_run:
-    executor: ubuntu-default
-    steps:
-      - attach_workspace:
-          at: /
       - cloudrun/deploy:
           image: europe-north1-docker.pkg.dev/audiosetrecorder-2022/crystal/crystal:sophie
           platform: "managed"
@@ -40,7 +28,4 @@ jobs:
 workflows:
   launch:
     jobs:
-      - build
-      - deploy_on_cloud_run:
-          requires:
-            - "build"
+      - build_deploy_on_cloud_run
