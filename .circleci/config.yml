@@ -28,12 +28,11 @@ jobs:
   gcloud:
     executor: ubuntu-default
     steps:
-      # Store service account
-      - run: echo $GCLOUD_SERVICE_KEY > ${HOME}/gcloud-service-key.json
-      # Initialize gcloud CLI
       - run:
-          name: Initialize gcloud CLI
+          name: Initialize gcloud CLI to connect to Google cloud
+          shell: bash
           command: |
+            echo $GCLOUD_SERVICE_KEY > ${HOME}/gcloud-service-key.json
             gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
             gcloud --quiet config set project $GOOGLE_PROJECT_ID
             gcloud --quiet config set compute/zone $GOOGLE_COMPUTE_ZONE
