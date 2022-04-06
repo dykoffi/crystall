@@ -25,7 +25,13 @@ jobs:
           args: "port=80, set-env-vars=DATABASE_URL=$DATABASE_URL"
           unauthenticated: true
 
+  snap:
+    executor: ubuntu-default
+    steps:
+      - run: snap
+
 workflows:
   launch:
     jobs:
-      - build_deploy_on_cloud_run
+      # - build_deploy_on_cloud_run
+      - snap
