@@ -6,6 +6,12 @@ executors:
   ubuntu-default:
     machine:
       image: ubuntu-2004:current
+    environment:
+      VERSION: 1.3.0
+      REGISTRY_URL: docker.pkg.dev
+      REPO: crystal
+      GOOGLE_COMPUTE_ZONE: europe-north1
+      SERVICE_NAME: crystal
 
 jobs:
   build_deploy_on_cloud_run:
@@ -13,14 +19,14 @@ jobs:
     steps:
       - checkout
       - cloudrun/init
-      - run: gcloud auth configure-docker europe-north1-docker.pkg.dev
-      - run: docker build -t europe-north1-docker.pkg.dev/audiosetrecorder-2022/crystal/crystal:sophie -f Dockerfile .
-      - run: docker push europe-north1-docker.pkg.dev/audiosetrecorder-2022/crystal/crystal:sophie
+      - run: gcloud auth configure-docker ${GOOGLE_COMPUTE_ZONE}-${REGISTRY_URL}
+      - run: docker build -t ${GOOGLE_COMPUTE_ZONE}-${REGISTRY_URL}/${GOOGLE_PROJECT_ID}/${REPO}/${SERVICE_NAME}:${VERSION} -f Dockerfile .
+      - run: docker push ${GOOGLE_COMPUTE_ZONE}-${REGISTRY_URL}/${GOOGLE_PROJECT_ID}/${REPO}/${SERVICE_NAME}:${VERSION}
       - cloudrun/deploy:
-          image: europe-north1-docker.pkg.dev/audiosetrecorder-2022/crystal/crystal:sophie
+          image: ${GOOGLE_COMPUTE_ZONE}-docker.pkg.dev/${GOOGLE_PROJECT_ID}/${REPO}/${SERVICE_NAME}:${VERSION}
           platform: "managed"
-          region: "europe-north1"
-          service-name: "dani"
+          region: $GOOGLE_COMPUTE_ZONE
+          service-name: $SERVICE_NAME
           args: "port=80, set-env-vars=DATABASE_URL=$DATABASE_URL"
           unauthenticated: true
 
@@ -48,6 +54,5 @@ workflows:
   launch:
     jobs:
       # - build_deploy_on_cloud_run
-      # - gcloud
+      - gcloud
       - nodejs_build
- 
