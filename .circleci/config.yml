@@ -25,7 +25,7 @@ jobs:
           args: "port=80, set-env-vars=DATABASE_URL=$DATABASE_URL"
           unauthenticated: true
 
-  gloud:
+  gcloud:
     executor: ubuntu-default
     steps:
       - run: gcloud init
