@@ -25,14 +25,13 @@ jobs:
           args: "port=80, set-env-vars=DATABASE_URL=$DATABASE_URL"
           unauthenticated: true
 
-  snap:
+  gloud:
     executor: ubuntu-default
     steps:
-      - run: sudo snap install google-cloud-cli --classic
       - run: gcloud init
 
 workflows:
   launch:
     jobs:
       # - build_deploy_on_cloud_run
-      - snap
+      - gcloud
