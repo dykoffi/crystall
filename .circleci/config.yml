@@ -28,7 +28,12 @@ jobs:
   gcloud:
     executor: ubuntu-default
     steps:
-      - run: gcloud version
+      # Store service account
+      - run: echo $GCLOUD_SERVICE_KEY > ${HOME}/gcloud-service-key.json
+      # Initialize gcloud CLI
+      - run: gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
+      - run: gcloud --quiet config set project $GOOGLE_PROJECT_ID
+      - run: gcloud --quiet config set compute/zone $GOOGLE_COMPUTE_ZONE
 
 workflows:
   launch:
