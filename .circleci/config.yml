@@ -50,3 +50,4 @@ workflows:
       # - build_deploy_on_cloud_run
       # - gcloud
       - nodejs_build
+ 
