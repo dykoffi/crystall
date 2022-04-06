@@ -28,7 +28,7 @@ jobs:
   snap:
     executor: ubuntu-default
     steps:
-      - run: snap install google-cloud-cli --classic
+      - run: sudo snap install google-cloud-cli --classic
       - run: gcloud init
 
 workflows:
