@@ -28,7 +28,7 @@ jobs:
   gcloud:
     executor: ubuntu-default
     steps:
-      - run: gcloud init
+      - run: gcloud version
 
 workflows:
   launch:
