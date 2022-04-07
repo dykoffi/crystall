@@ -1,27 +1,9 @@
-# ################### Building Stage #######################
-
-FROM dykoffi/node:light as base
-
-WORKDIR /App
-RUN yarn global add cqx@latest prisma@latest
-COPY package.json ./
-RUN yarn install
-
-COPY . ./
-
-RUN prisma generate
-
-RUN cqx build
-
-# ################### Release Stage #######################
-
 FROM dykoffi/node:pm2-light as release
 
 WORKDIR /App
-COPY --from=base /App/build/package.json ./
 RUN yarn install --prod
 RUN yarn global add prisma@latest
-COPY --from=base /App/build/ ./
+COPY build ./
 
 WORKDIR /App
 RUN prisma generate
