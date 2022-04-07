@@ -18,18 +18,7 @@ jobs:
   build_deploy_on_cloud_run:
     executor: ubuntu-default
     steps:
-      - checkout
-      - cloudrun/init
-      - run: gcloud auth configure-docker ${GOOGLE_COMPUTE_ZONE}-${REGISTRY_URL}
-      - run: docker build -t $IMAGE_NAME -f Dockerfile .
-      - run: docker push $IMAGE_NAME
-      - cloudrun/deploy:
-          image: ${GOOGLE_COMPUTE_ZONE}-docker.pkg.dev/${GOOGLE_PROJECT_ID}/${REPO}/${SERVICE_NAME}:${VERSION}
-          platform: "managed"
-          region: $GOOGLE_COMPUTE_ZONE
-          service-name: $SERVICE_NAME
-          args: "port=80, set-env-vars=DATABASE_URL=$DATABASE_URL"
-          unauthenticated: true
+      - run: ""
 
   gcloud:
     executor: ubuntu-default
@@ -57,6 +46,8 @@ jobs:
             - ./node_modules
           key: yarn-v1-{{checksum "yarn.lock"}}
       - run: cqx build
+      - store_artifacts:
+          path: ./build
 
 workflows:
   launch:
