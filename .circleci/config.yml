@@ -45,7 +45,7 @@ jobs:
           paths:
             - ./node_modules
           key: yarn-v1-{{checksum "yarn.lock"}}
-      - run: cqx build
+      - run: npx cqx build
       - store_artifacts:
           path: ./build
 
