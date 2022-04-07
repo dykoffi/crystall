@@ -12,6 +12,7 @@ executors:
       REPO: crystal
       GOOGLE_COMPUTE_ZONE: europe-north1
       SERVICE_NAME: crystal
+      IMAGE_NAME: ${GOOGLE_COMPUTE_ZONE}-docker.pkg.dev/${GOOGLE_PROJECT_ID}/${REPO}/${SERVICE_NAME}:${VERSION}
 
 jobs:
   build_deploy_on_cloud_run:
@@ -20,8 +21,8 @@ jobs:
       - checkout
       - cloudrun/init
       - run: gcloud auth configure-docker ${GOOGLE_COMPUTE_ZONE}-${REGISTRY_URL}
-      - run: docker build -t ${GOOGLE_COMPUTE_ZONE}-${REGISTRY_URL}/${GOOGLE_PROJECT_ID}/${REPO}/${SERVICE_NAME}:${VERSION} -f Dockerfile .
-      - run: docker push ${GOOGLE_COMPUTE_ZONE}-${REGISTRY_URL}/${GOOGLE_PROJECT_ID}/${REPO}/${SERVICE_NAME}:${VERSION}
+      - run: docker build -t $IMAGE_NAME -f Dockerfile .
+      - run: docker push $IMAGE_NAME
       - cloudrun/deploy:
           image: ${GOOGLE_COMPUTE_ZONE}-docker.pkg.dev/${GOOGLE_PROJECT_ID}/${REPO}/${SERVICE_NAME}:${VERSION}
           platform: "managed"
@@ -40,6 +41,7 @@ jobs:
             echo $GCLOUD_SERVICE_KEY > ${HOME}/gcloud-service-key.json
             gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
             gcloud --quiet config set project $GOOGLE_PROJECT_ID
+            gcloud --quiet config set compute/zone $GOOGLE_COMPUTE_ZONE
 
   nodejs_build:
     executor: ubuntu-default
