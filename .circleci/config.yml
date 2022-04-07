@@ -48,7 +48,7 @@ jobs:
       - run: npx cqx build
       - store_artifacts:
           path: ./build
-
+ 
 workflows:
   launch:
     jobs:
