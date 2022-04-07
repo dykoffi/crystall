@@ -40,7 +40,7 @@ jobs:
           keys:
             - yarn-v1-{{checksum "yarn.lock"}}
       - run: yarn install
-      - run: yarn install -D cqx@latest
+      - run: yarn add -D cqx@latest prisma@latest
       - save_cache:
           paths:
             - ./node_modules
