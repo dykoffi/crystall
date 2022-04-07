@@ -47,6 +47,9 @@ jobs:
     executor: ubuntu-default
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - yarn-v1-{{checksum "yarn.lock"}}
       - run: yarn install
       - run: yarn global add cqx@latest
       - save_cache:
