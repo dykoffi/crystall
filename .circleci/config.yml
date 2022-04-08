@@ -45,6 +45,8 @@ jobs:
             - ./node_modules
           key: yarn-v1-{{checksum "yarn.lock"}}
       - run: npx cqx build
+      - run: ls
+      - run: ls build
       - run: 
           name : Update production database
           shell: bash
