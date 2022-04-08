@@ -6,6 +6,7 @@ executors:
   ubuntu-default:
     machine:
       image: ubuntu-2004:current
+    shell: bash
     environment:
       VERSION: 1.3.0
       REGISTRY_URL: docker.pkg.dev
@@ -25,14 +26,25 @@ jobs:
     steps:
       - run:
           name: Initialize gcloud CLI to connect to Google cloud
-          shell: bash
           command: |
             echo $GCLOUD_SERVICE_KEY > ${HOME}/gcloud-service-key.json
             gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
+            gcloud auth configure-docker ${GOOGLE_COMPUTE_ZONE}-${REGISTRY_URL}
             gcloud --quiet config set project $GOOGLE_PROJECT_ID
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - .
       - run:
-          gcloud run deploy ehh --image ${GOOGLE_COMPUTE_ZONE}-docker.pkg.dev/${GOOGLE_PROJECT_ID}/${REPO}/${SERVICE_NAME}:${VERSION} --port 80 --allow-unauthenticated
+          gcloud run deploy ehh --image ${GOOGLE_COMPUTE_ZONE}-${REGISTRY_URL}/${GOOGLE_PROJECT_ID}/${REPO}/${SERVICE_NAME}:${VERSION} --port 80 --allow-unauthenticated --region $GOOGLE_COMPUTE_ZONE
           # gcloud --quiet config set compute/zone $GOOGLE_COMPUTE_ZONE
+
+  test_ws:
+    executor: ubuntu-default
+    steps:
+      - attach_workspace:
+          at: ~/
+      - run: gcloud config list
 
   nodejs_build:
     executor: ubuntu-default
@@ -49,19 +61,21 @@ jobs:
       - run: npx cqx build
       - run:
           name: Update production database
-          shell: bash
           command: |
             echo "DATABASE_URL=${DATABASE_URL}" > .env
             npx prisma migrate deploy
           working_directory: build
       - run: yarn install --prod
       - run: cp -r ./node_modules build/node_modules
-      - run: docker build -t ${GOOGLE_COMPUTE_ZONE}-docker.pkg.dev/${GOOGLE_PROJECT_ID}/${REPO}/${SERVICE_NAME}:${VERSION} -f Dockerfile-circleCI .
+      - run: docker build -t ${GOOGLE_COMPUTE_ZONE}-${REGISTRY_URL}/${GOOGLE_PROJECT_ID}/${REPO}/${SERVICE_NAME}:${VERSION} -f Dockerfile-circleCI .
 
 workflows:
   launch:
     jobs:
-      - gcloud:
+      - gcloud
+      #     requires:
+      #       - nodejs_build
+      # - nodejs_build
+      - test_ws:
           requires:
-            - nodejs_build
-      - nodejs_build
+            - gcloud
