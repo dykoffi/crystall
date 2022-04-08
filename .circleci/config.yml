@@ -56,7 +56,7 @@ jobs:
           working_directory: build
       - run: yarn install --prod
       - run: cp -r ./node_modules build/node_modules
-      - run: docker build -t ${GOOGLE_COMPUTE_ZONE}-docker.pkg.dev/${GOOGLE_PROJECT_ID}/${REPO}/${SERVICE_NAME}:${VERSION} -f Dockerfile-circleCI
+      - run: docker build -t ${GOOGLE_COMPUTE_ZONE}-docker.pkg.dev/${GOOGLE_PROJECT_ID}/${REPO}/${SERVICE_NAME}:${VERSION} -f Dockerfile-circleCI .
 
 workflows:
   launch:
