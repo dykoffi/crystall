@@ -30,6 +30,8 @@ jobs:
             echo $GCLOUD_SERVICE_KEY > ${HOME}/gcloud-service-key.json
             gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
             gcloud --quiet config set project $GOOGLE_PROJECT_ID
+      - run:
+          gcloud run deploy ehh --image $IMAGE_NAME --port 80 --allow-unauthenticated
           # gcloud --quiet config set compute/zone $GOOGLE_COMPUTE_ZONE
 
   nodejs_build:
@@ -47,19 +49,22 @@ jobs:
       - run: npx cqx build
       - run: ls
       - run: ls build
-      - run: 
-          name : Update production database
+      - run:
+          name: Update production database
           shell: bash
           command: |
             echo "DATABASE_URL=${DATABASE_URL}" > .env
-            ls
-            cat .env
             npx prisma migrate deploy
           working_directory: build
- 
+      - run: yarn install --prod
+      - run: cp -r ./node_modules build/node_modules
+      - run: docker build -t $IMAGE_NAME -f Dockerfile-circleCI
+
 workflows:
   launch:
     jobs:
       # - build_deploy_on_cloud_run
-      - gcloud
+      - gcloud:
+          requires:
+            - nodejs_build
       - nodejs_build
