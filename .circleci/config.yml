@@ -1,7 +1,4 @@
 version: 2.1
-orbs:
-  cloudrun: circleci/gcp-cloud-run@1.0.2
-
 executors:
   ubuntu-default:
     machine:
@@ -16,14 +13,11 @@ executors:
       SERVICE_NAME: crystal
 
 jobs:
-  build_deploy_on_cloud_run:
-    executor: ubuntu-default
-    steps:
-      - run: ""
-
   gcloud:
     executor: ubuntu-default
     steps:
+      - attach_workspace:
+          at: .
       - run:
           name: Initialize gcloud CLI to connect to Google cloud
           command: |
@@ -31,20 +25,13 @@ jobs:
             gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
             gcloud auth configure-docker ${GOOGLE_COMPUTE_ZONE}-${REGISTRY_URL}
             gcloud --quiet config set project $GOOGLE_PROJECT_ID
-      - persist_to_workspace:
-          root: ~/
-          paths:
-            - .
+
+      - run: docker build -t ${GOOGLE_COMPUTE_ZONE}-${REGISTRY_URL}/${GOOGLE_PROJECT_ID}/${REPO}/${SERVICE_NAME}:${VERSION} -f Dockerfile-circleCI .
+      - run: docker push ${GOOGLE_COMPUTE_ZONE}-${REGISTRY_URL}/${GOOGLE_PROJECT_ID}/${REPO}/${SERVICE_NAME}:${VERSION}
+
       # - run:
       #     gcloud run deploy ehh --image ${GOOGLE_COMPUTE_ZONE}-${REGISTRY_URL}/${GOOGLE_PROJECT_ID}/${REPO}/${SERVICE_NAME}:${VERSION} --port 80 --allow-unauthenticated --region $GOOGLE_COMPUTE_ZONE
       #     # gcloud --quiet config set compute/zone $GOOGLE_COMPUTE_ZONE
-
-  test_ws:
-    executor: ubuntu-default
-    steps:
-      - attach_workspace:
-          at: ~/
-      - run: gcloud config list
 
   nodejs_build:
     executor: ubuntu-default
@@ -67,15 +54,16 @@ jobs:
           working_directory: build
       - run: yarn install --prod
       - run: cp -r ./node_modules build/node_modules
-      - run: docker build -t ${GOOGLE_COMPUTE_ZONE}-${REGISTRY_URL}/${GOOGLE_PROJECT_ID}/${REPO}/${SERVICE_NAME}:${VERSION} -f Dockerfile-circleCI .
+      - persist_to_workspace:
+          root: .
+          paths:
+            - build
+            - Dockerfile-circleCI
 
 workflows:
   launch:
     jobs:
-      - gcloud
-      #     requires:
-      #       - nodejs_build
-      # - nodejs_build
-      - test_ws:
+      - gcloud:
           requires:
-            - gcloud
+            - nodejs_build
+      - nodejs_build
