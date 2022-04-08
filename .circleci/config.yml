@@ -61,7 +61,6 @@ jobs:
 workflows:
   launch:
     jobs:
-      - build_deploy_on_cloud_run
       - gcloud:
           requires:
             - nodejs_build
