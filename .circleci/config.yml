@@ -49,8 +49,9 @@ jobs:
           name : Update production database
           shell: bash
           command: |
-            echo "DATABASE_URL=${DATABASE_URL}" > build/.env
+            echo "DATABASE_URL=${DATABASE_URL}" > .env
             npx prisma migrate deploy
+          working_directory: build
  
 workflows:
   launch:
