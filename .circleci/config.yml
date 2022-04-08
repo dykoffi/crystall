@@ -4,7 +4,6 @@ executors:
     machine:
       image: ubuntu-2004:current
     shell: bash
-    docker_layer_caching: true
     environment:
       VERSION: 1.3.0
       REGISTRY_URL: docker.pkg.dev
