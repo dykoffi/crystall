@@ -12,6 +12,7 @@ executors:
       REPO: crystal
       GOOGLE_COMPUTE_ZONE: europe-north1
       SERVICE_NAME: crystal
+      IMAGE_NAME: ${GOOGLE_COMPUTE_ZONE}-docker.pkg.dev/${GOOGLE_PROJECT_ID}/${REPO}/${SERVICE_NAME}:${VERSION}
 
 jobs:
   build_deploy_on_cloud_run:
@@ -21,8 +22,6 @@ jobs:
 
   gcloud:
     executor: ubuntu-default
-    environment:
-      IMAGE_NAME: ${GOOGLE_COMPUTE_ZONE}-docker.pkg.dev/${GOOGLE_PROJECT_ID}/${REPO}/${SERVICE_NAME}:${VERSION}
     steps:
       - run:
           name: Initialize gcloud CLI to connect to Google cloud
@@ -41,6 +40,7 @@ jobs:
       IMAGE_NAME: ${GOOGLE_COMPUTE_ZONE}-docker.pkg.dev/${GOOGLE_PROJECT_ID}/${REPO}/${SERVICE_NAME}:${VERSION}
     steps:
       - checkout
+      - run: echo $IMAGE_NAME
       - restore_cache:
           keys:
             - yarn-v1-{{checksum "yarn.lock"}}
@@ -50,8 +50,6 @@ jobs:
             - ./node_modules
           key: yarn-v1-{{checksum "yarn.lock"}}
       - run: npx cqx build
-      - run: ls
-      - run: ls build
       - run:
           name: Update production database
           shell: bash
@@ -67,7 +65,7 @@ workflows:
   launch:
     jobs:
       # - build_deploy_on_cloud_run
-      - gcloud:
-          requires:
-            - nodejs_build
+      # - gcloud:
+      #     requires:
+      #       - nodejs_build
       - nodejs_build
