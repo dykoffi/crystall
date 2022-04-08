@@ -31,17 +31,13 @@ jobs:
             gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
             gcloud --quiet config set project $GOOGLE_PROJECT_ID
       - run:
-          gcloud run deploy ehh --image $IMAGE_NAME --port 80 --allow-unauthenticated
+          gcloud run deploy ehh --image ${GOOGLE_COMPUTE_ZONE}-docker.pkg.dev/${GOOGLE_PROJECT_ID}/${REPO}/${SERVICE_NAME}:${VERSION} --port 80 --allow-unauthenticated
           # gcloud --quiet config set compute/zone $GOOGLE_COMPUTE_ZONE
 
   nodejs_build:
     executor: ubuntu-default
-    environment:
-      IMAGE_NAME: ${GOOGLE_COMPUTE_ZONE}-docker.pkg.dev/${GOOGLE_PROJECT_ID}/${REPO}/${SERVICE_NAME}:${VERSION}
     steps:
       - checkout
-      - run: echo ${IMAGE_NAME}
-      - run: echo ${GOOGLE_COMPUTE_ZONE}-docker.pkg.dev/${GOOGLE_PROJECT_ID}/${REPO}/${SERVICE_NAME}:${VERSION}
       - restore_cache:
           keys:
             - yarn-v1-{{checksum "yarn.lock"}}
@@ -60,7 +56,7 @@ jobs:
           working_directory: build
       - run: yarn install --prod
       - run: cp -r ./node_modules build/node_modules
-      - run: docker build -t $IMAGE_NAME -f Dockerfile-circleCI
+      - run: docker build -t ${GOOGLE_COMPUTE_ZONE}-docker.pkg.dev/${GOOGLE_PROJECT_ID}/${REPO}/${SERVICE_NAME}:${VERSION} -f Dockerfile-circleCI
 
 workflows:
   launch:
