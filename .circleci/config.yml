@@ -35,9 +35,9 @@ jobs:
           root: ~/
           paths:
             - .
-      - run:
-          gcloud run deploy ehh --image ${GOOGLE_COMPUTE_ZONE}-${REGISTRY_URL}/${GOOGLE_PROJECT_ID}/${REPO}/${SERVICE_NAME}:${VERSION} --port 80 --allow-unauthenticated --region $GOOGLE_COMPUTE_ZONE
-          # gcloud --quiet config set compute/zone $GOOGLE_COMPUTE_ZONE
+      # - run:
+      #     gcloud run deploy ehh --image ${GOOGLE_COMPUTE_ZONE}-${REGISTRY_URL}/${GOOGLE_PROJECT_ID}/${REPO}/${SERVICE_NAME}:${VERSION} --port 80 --allow-unauthenticated --region $GOOGLE_COMPUTE_ZONE
+      #     # gcloud --quiet config set compute/zone $GOOGLE_COMPUTE_ZONE
 
   test_ws:
     executor: ubuntu-default
