@@ -12,7 +12,6 @@ executors:
       REPO: crystal
       GOOGLE_COMPUTE_ZONE: europe-north1
       SERVICE_NAME: crystal
-      IMAGE_NAME: ${GOOGLE_COMPUTE_ZONE}-docker.pkg.dev/${GOOGLE_PROJECT_ID}/${REPO}/${SERVICE_NAME}:${VERSION}
 
 jobs:
   build_deploy_on_cloud_run:
@@ -22,6 +21,8 @@ jobs:
 
   gcloud:
     executor: ubuntu-default
+    environment:
+      IMAGE_NAME: ${GOOGLE_COMPUTE_ZONE}-docker.pkg.dev/${GOOGLE_PROJECT_ID}/${REPO}/${SERVICE_NAME}:${VERSION}
     steps:
       - run:
           name: Initialize gcloud CLI to connect to Google cloud
@@ -36,6 +37,8 @@ jobs:
 
   nodejs_build:
     executor: ubuntu-default
+    environment:
+      IMAGE_NAME: ${GOOGLE_COMPUTE_ZONE}-docker.pkg.dev/${GOOGLE_PROJECT_ID}/${REPO}/${SERVICE_NAME}:${VERSION}
     steps:
       - checkout
       - restore_cache:
