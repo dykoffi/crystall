@@ -45,8 +45,12 @@ jobs:
             - ./node_modules
           key: yarn-v1-{{checksum "yarn.lock"}}
       - run: npx cqx build
-      - store_artifacts:
-          path: ./build
+      - run: 
+          name : Update production database
+          shell: bash
+          command: |
+            echo "DATABASE_URL=${DATABASE_URL}" > build/.env
+            npx prisma migrate deploy
  
 workflows:
   launch:
