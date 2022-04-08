@@ -4,6 +4,7 @@ executors:
     machine:
       image: ubuntu-2004:current
     shell: bash
+    docker_layer_caching: true
     environment:
       VERSION: 1.3.0
       REGISTRY_URL: docker.pkg.dev
@@ -12,39 +13,31 @@ executors:
       GOOGLE_PROJECT_ID: audiosetrecorder-2022
       SERVICE_NAME: crystal
 
-jobs:
-  gcloud:
-    executor: ubuntu-default
+commands:
+  restore_cache_cmd:
     steps:
-      - attach_workspace:
-          at: .
-      - run:
-          name: Initialize gcloud CLI to connect to Google cloud
-          command: |
-            echo $GCLOUD_SERVICE_KEY > ${HOME}/gcloud-service-key.json
-            gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
-            gcloud auth configure-docker ${GOOGLE_COMPUTE_ZONE}-${REGISTRY_URL}
-            gcloud --quiet config set project $GOOGLE_PROJECT_ID
-
-      - run: docker build -t ${GOOGLE_COMPUTE_ZONE}-${REGISTRY_URL}/${GOOGLE_PROJECT_ID}/${REPO}/${SERVICE_NAME}:${VERSION} -f Dockerfile-circleCI .
-      - run: docker push ${GOOGLE_COMPUTE_ZONE}-${REGISTRY_URL}/${GOOGLE_PROJECT_ID}/${REPO}/${SERVICE_NAME}:${VERSION}
-
-      # - run:
-      #     gcloud run deploy ehh --image ${GOOGLE_COMPUTE_ZONE}-${REGISTRY_URL}/${GOOGLE_PROJECT_ID}/${REPO}/${SERVICE_NAME}:${VERSION} --port 80 --allow-unauthenticated --region $GOOGLE_COMPUTE_ZONE
-      #     # gcloud --quiet config set compute/zone $GOOGLE_COMPUTE_ZONE
-
-  nodejs_build:
-    executor: ubuntu-default
-    steps:
-      - checkout
       - restore_cache:
           keys:
             - yarn-v1-{{checksum "yarn.lock"}}
-      - run: yarn install
+
+  save_cache_cmd:
+    steps:
       - save_cache:
           paths:
             - ./node_modules
           key: yarn-v1-{{checksum "yarn.lock"}}
+
+jobs:
+  build_deploy_on_cloud_run:
+    executor: ubuntu-default
+    steps:
+      - checkout
+
+      ####################### BUILD PROJECT ###########################
+
+      - restore_cache_cmd
+      - run: yarn install
+      - save_cache_cmd
       - run: npx cqx build
       - run:
           name: Update production database
@@ -54,16 +47,24 @@ jobs:
           working_directory: build
       - run: yarn install --prod
       - run: cp -r ./node_modules build/node_modules
-      - persist_to_workspace:
-          root: .
-          paths:
-            - build
-            - Dockerfile-circleCI
+
+      ####################### Initialize gcloud CLI ###########################
+
+      - run:
+          name: Initialize gcloud CLI to connect to Google cloud
+          command: |
+            echo $GCLOUD_SERVICE_KEY > ${HOME}/gcloud-service-key.json
+            gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
+            gcloud auth configure-docker ${GOOGLE_COMPUTE_ZONE}-${REGISTRY_URL}
+            gcloud --quiet config set project $GOOGLE_PROJECT_ID
+
+      ####################### BUILD & DEPOLY DOCKER IMAGE ###########################
+
+      - run: docker build -t ${GOOGLE_COMPUTE_ZONE}-${REGISTRY_URL}/${GOOGLE_PROJECT_ID}/${REPO}/${SERVICE_NAME}:${VERSION} -f Dockerfile-circleCI .
+      - run: docker push ${GOOGLE_COMPUTE_ZONE}-${REGISTRY_URL}/${GOOGLE_PROJECT_ID}/${REPO}/${SERVICE_NAME}:${VERSION}
+      - run: gcloud run deploy ehh --image ${GOOGLE_COMPUTE_ZONE}-${REGISTRY_URL}/${GOOGLE_PROJECT_ID}/${REPO}/${SERVICE_NAME}:${VERSION} --port 80 --allow-unauthenticated --region $GOOGLE_COMPUTE_ZONE
 
 workflows:
-  launch:
+  deploy:
     jobs:
-      - gcloud:
-          requires:
-            - nodejs_build
-      - nodejs_build
+      - build_deploy_on_cloud_run
