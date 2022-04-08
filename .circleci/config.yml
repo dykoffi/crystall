@@ -11,8 +11,8 @@ executors:
       REGISTRY_URL: docker.pkg.dev
       REPO: crystal
       GOOGLE_COMPUTE_ZONE: europe-north1
+      GOOGLE_PROJECT_ID: audiosetrecorder-2022
       SERVICE_NAME: crystal
-      IMAGE_NAME: ${GOOGLE_COMPUTE_ZONE}-docker.pkg.dev/${GOOGLE_PROJECT_ID}/${REPO}/${SERVICE_NAME}:${VERSION}
 
 jobs:
   build_deploy_on_cloud_run:
