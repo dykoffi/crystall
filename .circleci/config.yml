@@ -4,6 +4,7 @@ executors:
     machine:
       image: ubuntu-2004:current
     shell: bash
+    resource_class: xlarge
     environment:
       VERSION: 1.3.0
       REGISTRY_URL: docker.pkg.dev
@@ -18,6 +19,7 @@ commands:
       - restore_cache:
           keys:
             - yarn-v1-{{checksum "yarn.lock"}}
+            - yarn-v1-
 
   save_cache_cmd:
     steps:
@@ -59,9 +61,15 @@ jobs:
 
       ####################### BUILD & DEPOLY DOCKER IMAGE ###########################
 
-      - run: docker build -t ${GOOGLE_COMPUTE_ZONE}-${REGISTRY_URL}/${GOOGLE_PROJECT_ID}/${REPO}/${SERVICE_NAME}:${VERSION} -f Dockerfile-circleCI .
-      - run: docker push ${GOOGLE_COMPUTE_ZONE}-${REGISTRY_URL}/${GOOGLE_PROJECT_ID}/${REPO}/${SERVICE_NAME}:${VERSION}
-      - run: gcloud run deploy ehh --image ${GOOGLE_COMPUTE_ZONE}-${REGISTRY_URL}/${GOOGLE_PROJECT_ID}/${REPO}/${SERVICE_NAME}:${VERSION} --port 80 --allow-unauthenticated --region $GOOGLE_COMPUTE_ZONE
+      - run: 
+          name: Build docker Image
+          command: docker build -t ${GOOGLE_COMPUTE_ZONE}-${REGISTRY_URL}/${GOOGLE_PROJECT_ID}/${REPO}/${SERVICE_NAME}:${VERSION} -f Dockerfile-circleCI .
+      - run: 
+          name: push image to Artifact Registry
+          command: docker push ${GOOGLE_COMPUTE_ZONE}-${REGISTRY_URL}/${GOOGLE_PROJECT_ID}/${REPO}/${SERVICE_NAME}:${VERSION}
+      - run: 
+          name: Deploy Cloud Run application
+          command: gcloud run deploy $SERVICE_NAME --image ${GOOGLE_COMPUTE_ZONE}-${REGISTRY_URL}/${GOOGLE_PROJECT_ID}/${REPO}/${SERVICE_NAME}:${VERSION} --port 80 --allow-unauthenticated --region $GOOGLE_COMPUTE_ZONE
 
 workflows:
   deploy:
