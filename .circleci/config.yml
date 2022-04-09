@@ -4,7 +4,6 @@ executors:
     machine:
       image: ubuntu-2004:current
     shell: bash
-    resource_class: xlarge
     environment:
       VERSION: 1.3.0
       REGISTRY_URL: docker.pkg.dev
@@ -37,9 +36,13 @@ jobs:
       ####################### BUILD PROJECT ###########################
 
       - restore_cache_cmd
-      - run: yarn install
+      - run:
+          name: Install dependencies
+          command: yarn install
       - save_cache_cmd
-      - run: npx cqx build
+      - run:
+          name: Build project
+          command: npx cqx build
       - run:
           name: Update production database
           command: |
@@ -61,15 +64,21 @@ jobs:
 
       ####################### BUILD & DEPOLY DOCKER IMAGE ###########################
 
-      - run: 
+      - run:
           name: Build docker Image
-          command: docker build -t ${GOOGLE_COMPUTE_ZONE}-${REGISTRY_URL}/${GOOGLE_PROJECT_ID}/${REPO}/${SERVICE_NAME}:${VERSION} -f Dockerfile-circleCI .
-      - run: 
+          command: docker build 
+                    -t ${GOOGLE_COMPUTE_ZONE}-${REGISTRY_URL}/${GOOGLE_PROJECT_ID}/${REPO}/${SERVICE_NAME}:${VERSION} 
+                    -f Dockerfile-circleCI .
+      - run:
           name: push image to Artifact Registry
           command: docker push ${GOOGLE_COMPUTE_ZONE}-${REGISTRY_URL}/${GOOGLE_PROJECT_ID}/${REPO}/${SERVICE_NAME}:${VERSION}
-      - run: 
+      - run:
           name: Deploy Cloud Run application
-          command: gcloud run deploy $SERVICE_NAME --image ${GOOGLE_COMPUTE_ZONE}-${REGISTRY_URL}/${GOOGLE_PROJECT_ID}/${REPO}/${SERVICE_NAME}:${VERSION} --port 80 --allow-unauthenticated --region $GOOGLE_COMPUTE_ZONE
+          command: gcloud run deploy $SERVICE_NAME
+                   --image ${GOOGLE_COMPUTE_ZONE}-${REGISTRY_URL}/${GOOGLE_PROJECT_ID}/${REPO}/${SERVICE_NAME}:${VERSION} 
+                   --port 80 
+                   --region $GOOGLE_COMPUTE_ZONE
+                   --allow-unauthenticated 
 
 workflows:
   deploy:
